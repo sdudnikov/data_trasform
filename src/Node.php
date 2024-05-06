@@ -13,15 +13,14 @@ class Node implements NodeInterface
 
     protected array $additionalData = [];
 
-    protected bool $isSet = true;
-
     public function __construct(
         protected string $fieldName,
         protected string $fieldType,
         protected array $outputFields = [],
         protected array $children = [],
         protected ?ValidatorInterface $validator = null,
-        protected ?TransformerInterface $transformer = null
+        protected ?TransformerInterface $transformer = null,
+        protected ?bool $isAdded = null
     ) {}
 
     public function getChildren(): array
@@ -101,13 +100,23 @@ class Node implements NodeInterface
         return $this->additionalData;
     }
 
-    public function isSet(?bool $flag = null): bool
+    public function getNotSetValue(): mixed
     {
-        if (is_null($flag)) {
-            return $this->isSet;
+        return match ($this->getFieldType()) {
+            NodeInterface::TYPE_STRING => '',
+            NodeInterface::TYPE_ARRAY => [],
+            NodeInterface::TYPE_INT => 0,
+            NodeInterface::TYPE_FLOAT => 0.0,
+            NodeInterface::TYPE_BOOL, NodeInterface::TYPE_SCALAR => null
+        };
+    }
+
+    public function isAdded(?bool $isAdded = null): ?bool
+    {
+        if (!is_null($isAdded)) {
+            $this->isAdded = $isAdded;
         }
 
-        $this->isSet = $flag;
-        return $this->isSet;
+        return $this->isAdded;
     }
 }

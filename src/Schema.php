@@ -39,10 +39,11 @@ class Schema implements SchemaInterface
         $transformer = $node->getTransformer();
 
         $this->typeValidation($data, $node);
-        $validator?->validate($data, $node);
         if ($transformer) {
             $data = $transformer->transform($data, $node);
         }
+
+        $validator?->validate($data, $node);
 
         $children = $node->getChildren();
         if (!is_array($data) || !$children) {
@@ -52,7 +53,7 @@ class Schema implements SchemaInterface
         return $this->transformChildren($node, $data);
     }
 
-    private function transformChildren($root, $data)
+    private function transformChildren(NodeInterface $root, $data): array
     {
         $result = [];
         foreach ($root->getChildren() as $node) {
@@ -62,13 +63,15 @@ class Schema implements SchemaInterface
             }
 
             foreach ($fields as $field) {
+                if (!array_key_exists($field, $data) && !$node->isAdded()) {
+                    continue;
+                }
+
                 $this->storeNodeState($node);
                 $node->setFieldName((string) $field);
 
-                if (!array_key_exists($node->getFieldName(), $data)) {
-                    $dataToTransform = $this->getNotSetValue($node);
-                    $node->isSet(false);
-                } else {
+                $dataToTransform = $node->getNotSetValue();
+                if (array_key_exists($node->getFieldName(), $data)) {
                     $dataToTransform = $data[$node->getFieldName()];
                 }
 
@@ -83,7 +86,7 @@ class Schema implements SchemaInterface
 
     private function typeValidation($data, NodeInterface $node)
     {
-        if (is_null($data) || !$node->isSet()) {
+        if (is_null($data)) {
             return;
         }
 
@@ -127,10 +130,6 @@ class Schema implements SchemaInterface
 
     private function setOutputFields(NodeInterface $node, $value, &$result): void
     {
-        if (!$node->isSet()) {
-            return;
-        }
-
         $outputFields = $node->getOutputFields();
         foreach ($outputFields as $outputField) {
             $result[$outputField] = $value;
@@ -140,23 +139,10 @@ class Schema implements SchemaInterface
     private function storeNodeState(NodeInterface $node): void
     {
         $this->state['name'] = $node->getFieldName();
-        $this->state['is_set'] = $node->isSet();
     }
 
     private function restoreNodeState(NodeInterface $node): void
     {
         $node->setFieldName($this->state['name']);
-        $node->isSet($this->state['is_set']);
-    }
-
-    private function getNotSetValue(NodeInterface $node): mixed
-    {
-        return match ($node->getFieldType()) {
-            NodeInterface::TYPE_STRING => '',
-            NodeInterface::TYPE_ARRAY => [],
-            NodeInterface::TYPE_INT => 0,
-            NodeInterface::TYPE_FLOAT => 0.0,
-            NodeInterface::TYPE_BOOL, NodeInterface::TYPE_SCALAR => null
-        };
     }
 }

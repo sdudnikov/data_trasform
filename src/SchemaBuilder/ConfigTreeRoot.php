@@ -12,6 +12,11 @@ class ConfigTreeRoot
 
     public function field(string $name, string $type): ConfigTreeField
     {
-        return new ConfigTreeField($name, $type, $this->nodesManager);
+        return new ConfigTreeField([$name], $type, $this->nodesManager);
+    }
+
+    public function fields(array $names, string $type): ConfigTreeField
+    {
+        return new ConfigTreeField($names, $type, $this->nodesManager);
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace DataLib\Transform\SchemaBuilder;
 
+use DataLib\Transform\Interface\NodeInterface;
 use DataLib\Transform\Interface\TransformerInterface;
 use DataLib\Transform\Interface\ValidatorInterface;
 use DataLib\Transform\Node;
@@ -30,18 +31,21 @@ class NodesManager
         array $outputFields = [],
         array $children = [],
         ?ValidatorInterface $validator = null,
-        ?TransformerInterface $transformer= null
-
-    ): void {
+        ?TransformerInterface $transformer= null,
+        ?bool $isAdded = false
+    ): NodeInterface {
         $rootNode = $this->getRootNode();
-        $rootNode->addChild(new Node(
+        $node = new Node(
             $name,
             $type,
             $outputFields,
             $children,
             $validator,
-            $transformer
-        ));
+            $transformer,
+            $isAdded
+        );
+        $rootNode->addChild($node);
+        return $node;
     }
 
     public function getRootNode(): RootNode

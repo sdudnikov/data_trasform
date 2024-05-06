@@ -42,5 +42,7 @@ interface NodeInterface
 
     public function getAdditionalData(): array;
 
-    public function isSet(?bool $flag = null): bool;
+    public function isAdded(?bool $isAdded = null): ?bool;
+
+    public function getNotSetValue(): mixed;
 }
