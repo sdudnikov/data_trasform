@@ -1,0 +1,22 @@
+{
+    "name": "datalib/transfrom",
+    "description": "Transformation array by schema to another format",
+    "keywords": ["transformation","array", "schema"],
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "DataLib\\Transform\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sergey Dudnikov",
+            "email": "s.dudnikov28@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=8.1"
+    }
+}
