@@ -8,7 +8,6 @@ interface NodeInterface
     const TYPE_SCALAR = 'scalar';
     const TYPE_STRING = 'string';
     const TYPE_ARRAY = 'array';
-
     const TYPE_INT = 'integer';
     const TYPE_FLOAT = 'float';
     const TYPE_BOOL = 'boolean';
@@ -21,9 +20,9 @@ interface NodeInterface
 
     public function getOutputFields(): array;
 
-    public function getValidator(): ?ValidatorInterface;
+    public function validator(?ValidatorInterface $validator = null): ?ValidatorInterface;
 
-    public function getTransformer(): ?TransformerInterface;
+    public function transformer(?TransformerInterface $transformer = null): ?TransformerInterface;
 
     /**
      * @return NodeInterface []
@@ -37,10 +36,7 @@ interface NodeInterface
     public function getPrentNode(): ?NodeInterface;
 
     public function setParentNode(NodeInterface $parent): void;
-
-    public function setAdditionalData(array $additionalData): void;
-
-    public function getAdditionalData(): array;
+    public function additionalData(?array $additionalData = null): ?array;
 
     public function isAdded(?bool $isAdded = null): ?bool;
 

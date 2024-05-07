@@ -6,16 +6,20 @@ namespace DataLib\Transform\SchemaBuilder;
 use DataLib\Transform\Interface\NodeInterface;
 use DataLib\Transform\Interface\TransformerInterface;
 use DataLib\Transform\Interface\ValidatorInterface;
+use DataLib\Transform\RootNode;
 
 class ConfigTreeField
 {
     protected ?TransformerInterface $transformer = null;
+    protected bool $isTransformerInherited = false;
     protected ?ValidatorInterface $validator = null;
+    protected bool $isValidatorInherited = false;
     protected array $outputFields = [];
     protected ?NodesManager $childNodesManager = null;
     protected ?bool $isAdded = null;
     protected bool $isAddedInherited = false;
     protected array $additionalData = [];
+    protected bool $isAddDataInherited = false;
 
     public function __construct(
         protected readonly array $names,
@@ -23,14 +27,16 @@ class ConfigTreeField
         protected readonly NodesManager $nodesManager
     ) {}
 
-    public function validator($validator): self
+    public function validator($validator, bool $isInherited = false): self
     {
+        $this->isValidatorInherited = $isInherited;
         $this->validator = $validator;
         return $this;
     }
 
-    public function transformer($transformer): self
+    public function transformer($transformer, bool $isInherited = false): self
     {
+        $this->isTransformerInherited = $isInherited;
         $this->transformer = $transformer;
         return $this;
     }
@@ -48,8 +54,9 @@ class ConfigTreeField
         return $this;
     }
 
-    public function additionalData(array $additionalData): self
+    public function additionalData(array $additionalData, bool $isInherited = false): self
     {
+        $this->isAddDataInherited = $isInherited;
         $this->additionalData = $additionalData;
         return $this;
     }
@@ -85,7 +92,7 @@ class ConfigTreeField
                 $this->isAdded
             );
 
-            $node->setAdditionalData($this->additionalData);
+            $node->additionalData($this->additionalData);
         }
 
         return $this->nodesManager->getConfigTreeRoot();
@@ -93,11 +100,38 @@ class ConfigTreeField
 
     private function inheritProperties(NodeInterface $node): void
     {
+        if (!$node instanceof RootNode) {
+            $this->inherit($node);
+        }
+
+        foreach ($node->getChildren() as $child) {
+            $this->inheritProperties($child);
+        }
+    }
+
+    private function inherit(NodeInterface $node): void
+    {
         if ($this->isAddedInherited) {
-            foreach ($node->getChildren() as $child) {
-                if (is_null($child->isAdded())) {
-                    $child->isAdded($this->isAdded);
-                }
+            if (is_null($node->isAdded())) {
+                $node->isAdded($this->isAdded);
+            }
+        }
+
+        if ($this->isTransformerInherited) {
+            if (is_null($node->transformer())) {
+                $node->transformer($this->transformer);
+            }
+        }
+
+        if ($this->isValidatorInherited) {
+            if (is_null($node->validator())) {
+                $node->validator($this->validator);
+            }
+        }
+
+        if ($this->isAddDataInherited) {
+            if (is_null($node->additionalData())) {
+                $node->additionalData($this->additionalData);
             }
         }
     }

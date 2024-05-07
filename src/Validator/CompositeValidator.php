@@ -12,7 +12,7 @@ class CompositeValidator implements ValidatorInterface
         protected array $validators = []
     ) {}
 
-    public function validate(mixed $data, NodeInterface $node)
+    public function validate(mixed $data, NodeInterface $node): void
     {
         /** @var ValidatorInterface $validator */
         foreach ($this->validators as $validator) {

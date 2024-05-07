@@ -35,8 +35,8 @@ class Schema implements SchemaInterface
 
     protected function recursiveTransform($data, NodeInterface $node)
     {
-        $validator = $node->getValidator();
-        $transformer = $node->getTransformer();
+        $validator = $node->validator();
+        $transformer = $node->transformer();
 
         $this->typeValidation($data, $node);
         if ($transformer) {

@@ -10,11 +10,15 @@ class ArrayMerge implements TransformerInterface
 {
     use PipeTransform;
 
-    public function __construct(private readonly array $defaultValues)
+    public function __construct(private readonly array $array)
     {}
 
     public function transform(mixed $data, NodeInterface $node): mixed
     {
-        return array_merge($this->defaultValues, $data);
+        if (is_array($data)) {
+            $data = array_merge($this->array, $data);
+        }
+
+        return $this->next($data, $node);
     }
 }

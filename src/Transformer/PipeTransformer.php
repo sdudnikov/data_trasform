@@ -8,6 +8,9 @@ use DataLib\Transform\Interface\TransformerInterface;
 
 class PipeTransformer implements TransformerInterface
 {
+
+    protected ?TransformerInterface $transformer = null;
+
     public function __construct(array $transformers)
     {
         $transformers = array_reverse($transformers);
@@ -22,9 +25,6 @@ class PipeTransformer implements TransformerInterface
             $this->pushTransformer($transformer);
         }
     }
-
-
-    protected ?TransformerInterface $transformer = null;
 
     public function transform(mixed $data, NodeInterface $node): mixed
     {

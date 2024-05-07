@@ -5,5 +5,5 @@ namespace DataLib\Transform\Interface;
 
 interface ValidatorInterface
 {
-    public function validate(mixed $data, NodeInterface $node);
+    public function validate(mixed $data, NodeInterface $node): void;
 }

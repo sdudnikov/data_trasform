@@ -8,7 +8,7 @@ use DataLib\Transform\Interface\ValidatorInterface;
 
 class Required implements ValidatorInterface
 {
-    public function validate(mixed $data, NodeInterface $node)
+    public function validate(mixed $data, NodeInterface $node): void
     {
         if (!$data) {
             throw new \Exception('Field: ' . $node->getFullName() . ' is required');

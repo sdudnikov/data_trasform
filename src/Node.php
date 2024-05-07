@@ -13,26 +13,26 @@ class Node implements NodeInterface
 
     protected array $additionalData = [];
 
+    protected array $children = [];
+
     public function __construct(
         protected string $fieldName,
         protected string $fieldType,
         protected array $outputFields = [],
-        protected array $children = [],
+        array $children = [],
         protected ?ValidatorInterface $validator = null,
         protected ?TransformerInterface $transformer = null,
         protected ?bool $isAdded = null
-    ) {}
+    ) {
+        foreach ($children as $child) {
+            $this->addChild($child);
+        }
+    }
 
     public function getChildren(): array
     {
         return $this->children;
     }
-
-    public function getTransformer(): ?TransformerInterface
-    {
-        return $this->transformer;
-    }
-
 
     public function setFieldName(string $fieldName): void
     {
@@ -56,11 +56,6 @@ class Node implements NodeInterface
         }
 
         return $this->outputFields;
-    }
-
-    public function getValidator(): ?ValidatorInterface
-    {
-        return $this->validator;
     }
 
     public function addChild(NodeInterface $node): void
@@ -90,16 +85,6 @@ class Node implements NodeInterface
         return $this->getPrentNode()->getFullName() . '.' . $this->getFieldName();
     }
 
-    public function setAdditionalData(array $additionalData): void
-    {
-        $this->additionalData = $additionalData;
-    }
-
-    public function getAdditionalData(): array
-    {
-        return $this->additionalData;
-    }
-
     public function getNotSetValue(): mixed
     {
         return match ($this->getFieldType()) {
@@ -118,5 +103,32 @@ class Node implements NodeInterface
         }
 
         return $this->isAdded;
+    }
+
+    public function validator(?ValidatorInterface $validator = null): ?ValidatorInterface
+    {
+        if (!is_null($validator)) {
+            $this->validator = $validator;
+        }
+
+        return $this->validator;
+    }
+
+    public function transformer(?TransformerInterface $transformer = null): ?TransformerInterface
+    {
+        if (!is_null($transformer)) {
+            $this->transformer = $transformer;
+        }
+
+        return $this->transformer;
+    }
+
+    public function additionalData(?array $additionalData = null): ?array
+    {
+        if (!is_null($additionalData)) {
+            $this->additionalData = $additionalData;
+        }
+
+        return $this->additionalData;
     }
 }
