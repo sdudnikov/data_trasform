@@ -18,7 +18,7 @@ interface NodeInterface
 
     public function getFieldType(): string;
 
-    public function getOutputFields(): array;
+    public function outputFields(?array $outputFields = null): ?array;
 
     public function validator(?ValidatorInterface $validator = null): ?ValidatorInterface;
 
@@ -36,6 +36,7 @@ interface NodeInterface
     public function getPrentNode(): ?NodeInterface;
 
     public function setParentNode(NodeInterface $parent): void;
+
     public function additionalData(?array $additionalData = null): ?array;
 
     public function isAdded(?bool $isAdded = null): ?bool;

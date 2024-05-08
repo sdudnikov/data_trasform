@@ -43,6 +43,10 @@ class Schema implements SchemaInterface
             $data = $transformer->transform($data, $node);
         }
 
+        if (!$node->outputFields()) {
+            return $data;
+        }
+
         $validator?->validate($data, $node);
 
         $children = $node->getChildren();
@@ -130,7 +134,11 @@ class Schema implements SchemaInterface
 
     private function setOutputFields(NodeInterface $node, $value, &$result): void
     {
-        $outputFields = $node->getOutputFields();
+        $outputFields = $node->outputFields();
+        if (!$outputFields) {
+            return;
+        }
+
         foreach ($outputFields as $outputField) {
             $result[$outputField] = $value;
         }

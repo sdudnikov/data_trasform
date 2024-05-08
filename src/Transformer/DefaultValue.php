@@ -10,8 +10,12 @@ class DefaultValue implements TransformerInterface
 {
     use PipeTransform;
 
-    public function __construct(private $defaultValue = '')
-    {}
+    public function __construct(
+        private $defaultValue = '',
+        ?TransformerInterface $next = null
+    ) {
+        $this->next = $next;
+    }
 
     public function transform(mixed $data, NodeInterface $node): mixed
     {

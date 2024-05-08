@@ -10,8 +10,7 @@ class ArrayMerge implements TransformerInterface
 {
     use PipeTransform;
 
-    public function __construct(private readonly array $array)
-    {}
+    public function __construct(private readonly array $array) {}
 
     public function transform(mixed $data, NodeInterface $node): mixed
     {

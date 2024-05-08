@@ -8,10 +8,14 @@ use DataLib\Transform\Interface\ValidatorInterface;
 
 class Required implements ValidatorInterface
 {
+    public function __construct(private readonly ?ValidatorInterface $validator = null) {}
+
     public function validate(mixed $data, NodeInterface $node): void
     {
         if (!$data) {
             throw new \Exception('Field: ' . $node->getFullName() . ' is required');
         }
+
+        $this->validator?->validate($data, $node);
     }
 }

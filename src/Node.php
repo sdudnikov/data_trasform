@@ -10,9 +10,7 @@ use DataLib\Transform\Interface\TransformerInterface;
 class Node implements NodeInterface
 {
     protected ?NodeInterface $parentNode = null;
-
     protected array $additionalData = [];
-
     protected array $children = [];
 
     public function __construct(
@@ -47,15 +45,6 @@ class Node implements NodeInterface
     public function getFieldType(): string
     {
         return $this->fieldType;
-    }
-
-    public function getOutputFields(): array
-    {
-        if (!$this->outputFields) {
-            return [$this->fieldName];
-        }
-
-        return $this->outputFields;
     }
 
     public function addChild(NodeInterface $node): void
@@ -130,5 +119,14 @@ class Node implements NodeInterface
         }
 
         return $this->additionalData;
+    }
+
+    public function outputFields(?array $outputFields = null): ?array
+    {
+        if (!is_null($outputFields)) {
+            $this->outputFields = $outputFields;
+        }
+
+        return $this->outputFields;
     }
 }

@@ -7,6 +7,7 @@ use DataLib\Transform\Interface\NodeInterface;
 use DataLib\Transform\Interface\TransformerInterface;
 use DataLib\Transform\Interface\ValidatorInterface;
 use DataLib\Transform\RootNode;
+use DataLib\Transform\Validator\Required;
 
 class ConfigTreeField
 {
@@ -20,6 +21,7 @@ class ConfigTreeField
     protected bool $isAddedInherited = false;
     protected array $additionalData = [];
     protected bool $isAddDataInherited = false;
+    protected bool $required = false;
 
     public function __construct(
         protected readonly array $names,
@@ -43,7 +45,17 @@ class ConfigTreeField
 
     public function outputFields(array $outputFields): self
     {
+        if (count($this->names) > 1) {
+            throw new \Exception('You can set outputFields only form one field name');
+        }
+
         $this->outputFields = $outputFields;
+        return $this;
+    }
+
+    public function required(bool $required = true): self
+    {
+        $this->required = $required;
         return $this;
     }
 
@@ -85,7 +97,7 @@ class ConfigTreeField
         foreach ($this->names as $name) {
             $node = $this->nodesManager->addNode($name,
                 $this->type,
-                $this->outputFields,
+                !$this->outputFields ? [$name] : $this->outputFields,
                 $children,
                 $this->validator,
                 $this->transformer,
@@ -93,6 +105,7 @@ class ConfigTreeField
             );
 
             $node->additionalData($this->additionalData);
+            $this->setRequired($node);
         }
 
         return $this->nodesManager->getConfigTreeRoot();
@@ -133,6 +146,14 @@ class ConfigTreeField
             if (is_null($node->additionalData())) {
                 $node->additionalData($this->additionalData);
             }
+        }
+    }
+
+    private function setRequired(NodeInterface $node): void
+    {
+        if ($this->required) {
+            $node->isAdded(true);
+            $node->validator(new Required($node->validator()));
         }
     }
 }
