@@ -78,6 +78,7 @@ class Node implements NodeInterface
     {
         return match ($this->getFieldType()) {
             NodeInterface::TYPE_STRING => '',
+            NodeInterface::TYPE_NULL => null,
             NodeInterface::TYPE_ARRAY => [],
             NodeInterface::TYPE_INT => 0,
             NodeInterface::TYPE_FLOAT => 0.0,

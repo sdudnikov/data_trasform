@@ -57,7 +57,12 @@ class Schema implements SchemaInterface
         return $this->transformChildren($node, $data);
     }
 
-    private function transformChildren(NodeInterface $root, $data): array
+    /**
+     * @param NodeInterface $root
+     * @param mixed $data
+     * @return array
+     */
+    private function transformChildren($root, $data): array
     {
         $result = [];
         foreach ($root->getChildren() as $node) {
@@ -70,8 +75,12 @@ class Schema implements SchemaInterface
                 if (!array_key_exists($field, $data) && !$node->isAdded()) {
                     continue;
                 }
-
                 $this->storeNodeState($node);
+
+                if ($node->getFieldName() === self::ALL_KEYS) {
+                    $node->outputFields([(string) $field]);
+                }
+
                 $node->setFieldName((string) $field);
 
                 $dataToTransform = $node->getNotSetValue();
@@ -90,11 +99,17 @@ class Schema implements SchemaInterface
 
     private function typeValidation($data, NodeInterface $node)
     {
+        $type = $node->getFieldType();
+        if ($type == NodeInterface::TYPE_NULL) {
+            if (!is_null($data)) {
+                throw new \Exception('Field: ' . $node->getFullName() . ' should be ' . NodeInterface::TYPE_NULL);
+            }
+        }
+
         if (is_null($data)) {
             return;
         }
 
-        $type = $node->getFieldType();
         if ($type == NodeInterface::TYPE_SCALAR) {
             if (!is_scalar($data)) {
                 throw new \Exception('Field: ' . $node->getFullName() . ' should be ' . NodeInterface::TYPE_SCALAR);
@@ -147,10 +162,12 @@ class Schema implements SchemaInterface
     private function storeNodeState(NodeInterface $node): void
     {
         $this->state['name'] = $node->getFieldName();
+        $this->state['output_fields'] = $node->outputFields();
     }
 
     private function restoreNodeState(NodeInterface $node): void
     {
         $node->setFieldName($this->state['name']);
+        $node->outputFields($this->state['output_fields']);
     }
 }

@@ -10,11 +10,6 @@ trait PipeTransform
 {
     protected ?TransformerInterface $next = null;
 
-    public function __construct(?TransformerInterface $next = null)
-    {
-        $this->next = $next;
-    }
-
     public function next(mixed $data, NodeInterface $node): mixed
     {
         if (is_null($this->next)) {

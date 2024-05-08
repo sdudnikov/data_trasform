@@ -111,7 +111,7 @@ class ConfigTreeField
         return $this->nodesManager->getConfigTreeRoot();
     }
 
-    private function inheritProperties(NodeInterface $node): void
+    private function inheritProperties($node): void
     {
         if (!$node instanceof RootNode) {
             $this->inherit($node);

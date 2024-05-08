@@ -5,6 +5,7 @@ namespace DataLib\Transform;
 
 use DataLib\Transform\SchemaBuilder\ConfigTreeRoot;
 use DataLib\Transform\SchemaBuilder\NodesManager;
+use DataLib\Transform\SchemaBuilders\ArrayBuilder;
 use SplObjectStorage;
 
 class SchemaBuilder
@@ -20,7 +21,7 @@ class SchemaBuilder
         return $configTreeRoot;
     }
 
-    static public function create(string $name, ConfigTreeRoot $configTreeRoot): Schema
+    static public function createFromRoot(string $name, ConfigTreeRoot $configTreeRoot): Schema
     {
         $objectStorage = self::getSplObject();
         if (!isset($objectStorage[$configTreeRoot])) {
@@ -30,6 +31,13 @@ class SchemaBuilder
         /** @var NodesManager $nodesManager */
         $nodesManager = $objectStorage[$configTreeRoot];
         return new Schema($name, $nodesManager->getRootNode());
+    }
+
+    static public function createFromArray(string $name, array $array = []): Schema
+    {
+        $arrayBuilder = new ArrayBuilder();
+        $root = $arrayBuilder->build(self::root(), $array);
+        return self::createFromRoot($name, $root);
     }
 
     static private function newNodesManager(): NodesManager

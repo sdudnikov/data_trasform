@@ -11,6 +11,7 @@ interface NodeInterface
     const TYPE_INT = 'integer';
     const TYPE_FLOAT = 'float';
     const TYPE_BOOL = 'boolean';
+    const TYPE_NULL = 'NULL';
 
     public function setFieldName(string $fieldName): void;
 

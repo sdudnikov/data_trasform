@@ -3,20 +3,36 @@ declare(strict_types=1);
 
 namespace DataLib\Transform;
 
-final class RootNode extends Node
+use DataLib\Transform\Interface\NodeInterface;
+
+final class RootNode
 {
+    protected array $children = [];
     private ?array $flat = null;
 
     static public function root(): self
     {
-        return new self('root', 'root');
+        return new self();
+    }
+
+    public function addChild(NodeInterface $node): void
+    {
+        $this->children[$node->getFieldName()] = $node;
+    }
+
+    /**
+     * @return NodeInterface []
+     */
+    public function getChildren(): array
+    {
+        return $this->children;
     }
 
     /**
      * @param string $pattern
      * @return Node []
      */
-    public function search(string $pattern): iterable
+    public function searchByKey(string $pattern): iterable
     {
         $flat = $this->getFlat();
         foreach ($flat as $key => $node) {
@@ -45,6 +61,32 @@ final class RootNode extends Node
         return null;
     }
 
+    /**
+     * @param string $type
+     * @return Node []
+     */
+    public function searchByType(string $type): iterable
+    {
+        foreach ($this->recursiveSearchByType($type, $this) as $node) {
+            yield $node;
+        }
+    }
+
+    protected function recursiveSearchByType(string $type, $node): iterable
+    {
+        if (!$node instanceof RootNode && $node->getFieldType() == $type) {
+            yield $node;
+        }
+
+        foreach ($node->getChildren() as $child) {
+            foreach ($this->recursiveSearchByType($type, $child) as $node) {
+                yield $node;
+            }
+        }
+
+        return null;
+    }
+
     private function getFlat(): array
     {
         if (is_null($this->flat)) {
@@ -53,9 +95,9 @@ final class RootNode extends Node
         return $this->flat;
     }
 
-    private function fillFlat(Node $node): void
+    private function fillFlat($node): void
     {
-        if ($node->getFullName() != 'root') {
+        if (!$node instanceof RootNode) {
             $this->flat[$node->getFullName()] = $node;
         }
 
