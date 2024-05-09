@@ -92,6 +92,7 @@ class ConfigTreeField
             $childRoot = $this->childNodesManager->getRootNode();
             $this->inheritProperties($childRoot);
             $children = $childRoot->getChildren();
+            $this->childNodesManager = null;
         }
 
         foreach ($this->names as $name) {
