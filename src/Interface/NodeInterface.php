@@ -34,7 +34,7 @@ interface NodeInterface
 
     public function getFullName(): string;
 
-    public function getPrentNode(): ?NodeInterface;
+    public function getParentNode(): ?NodeInterface;
 
     public function setParentNode(NodeInterface $parent): void;
 

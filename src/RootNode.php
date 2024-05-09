@@ -7,7 +7,7 @@ use DataLib\Transform\Interface\NodeInterface;
 
 final class RootNode
 {
-    protected array $children = [];
+    private array $children = [];
     private ?array $flat = null;
 
     static public function root(): self
@@ -87,7 +87,22 @@ final class RootNode
         return null;
     }
 
-    private function getFlat(): array
+    public function walk(callable $callback): void
+    {
+        foreach ($this->getChildren() as $child) {
+            $this->walkNode($child, $callback);
+        }
+    }
+
+    protected function walkNode(NodeInterface $node, callable $callback): void
+    {
+        $callback($node);
+        foreach ($node->getChildren() as $child) {
+            $this->walkNode($child, $callback);
+        }
+    }
+
+    protected function getFlat(): array
     {
         if (is_null($this->flat)) {
             $this->fillFlat($this);

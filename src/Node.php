@@ -60,18 +60,18 @@ class Node implements NodeInterface
         }
     }
 
-    public function getPrentNode(): ?NodeInterface
+    public function getParentNode(): ?NodeInterface
     {
         return $this->parentNode;
     }
 
     public function getFullName(): string
     {
-        if (!$this->getPrentNode()) {
+        if (!$this->getParentNode()) {
             return $this->getFieldName();
         }
 
-        return $this->getPrentNode()->getFullName() . '.' . $this->getFieldName();
+        return $this->getParentNode()->getFullName() . '.' . $this->getFieldName();
     }
 
     public function getNotSetValue(): mixed
