@@ -62,7 +62,7 @@ class Schema implements SchemaInterface
      * @param mixed $data
      * @return array
      */
-    private function transformChildren($root, $data): array
+    private function transformChildren(NodeInterface $root, mixed $data): array
     {
         $result = [];
         foreach ($root->getChildren() as $node) {
@@ -102,7 +102,7 @@ class Schema implements SchemaInterface
         $type = $node->getFieldType();
         if ($type == NodeInterface::TYPE_NULL) {
             if (!is_null($data)) {
-                throw new \Exception('Field: ' . $node->getFullName() . ' should be ' . NodeInterface::TYPE_NULL);
+                throw new \Exception($this->getTypeErrorMsg($node, gettype($data)));
             }
         }
 
@@ -112,39 +112,44 @@ class Schema implements SchemaInterface
 
         if ($type == NodeInterface::TYPE_SCALAR) {
             if (!is_scalar($data)) {
-                throw new \Exception('Field: ' . $node->getFullName() . ' should be ' . NodeInterface::TYPE_SCALAR);
+                throw new \Exception($this->getTypeErrorMsg($node, gettype($data)));
             }
         }
 
         if ($type == NodeInterface::TYPE_STRING) {
             if (!is_string($data)) {
-                throw new \Exception('Field: ' . $node->getFullName() . ' should be ' . NodeInterface::TYPE_STRING);
+                throw new \Exception($this->getTypeErrorMsg($node, gettype($data)));
             }
         }
 
         if ($type == NodeInterface::TYPE_ARRAY) {
             if (!is_array($data)) {
-                throw new \Exception('Field: ' . $node->getFullName() . ' should be ' . NodeInterface::TYPE_ARRAY);
+                throw new \Exception($this->getTypeErrorMsg($node, gettype($data)));
             }
         }
 
         if ($type == NodeInterface::TYPE_INT) {
             if (!is_integer($data)) {
-                throw new \Exception('Field: ' . $node->getFullName() . ' should be ' . NodeInterface::TYPE_INT);
+                throw new \Exception($this->getTypeErrorMsg($node, gettype($data)));
             }
         }
 
         if ($type == NodeInterface::TYPE_FLOAT) {
             if (!is_float($data)) {
-                throw new \Exception('Field: ' . $node->getFullName() . ' should be ' . NodeInterface::TYPE_FLOAT);
+                throw new \Exception($this->getTypeErrorMsg($node, gettype($data)));
             }
         }
 
         if ($type == NodeInterface::TYPE_BOOL) {
             if (!is_bool($data)) {
-                throw new \Exception('Field: ' . $node->getFullName() . ' should be ' . NodeInterface::TYPE_BOOL);
+                throw new \Exception($this->getTypeErrorMsg($node, gettype($data)));
             }
         }
+    }
+
+    private function getTypeErrorMsg(NodeInterface $node, string $givenType): string
+    {
+        return 'Field: ' . $node->getFullName() . ' should be ' . $node->getFieldType() . ' ' . $givenType . ' given';
     }
 
     private function setOutputFields(NodeInterface $node, $value, &$result): void
