@@ -86,6 +86,7 @@ class Schema implements SchemaInterface
                 $dataToTransform = $node->getNotSetValue();
                 if (array_key_exists($node->getFieldName(), $data)) {
                     $dataToTransform = $data[$node->getFieldName()];
+                    $node->isNotSet(false);
                 }
 
                 $transformed = $this->recursiveTransform($dataToTransform, $node);

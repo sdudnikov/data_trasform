@@ -10,8 +10,12 @@ class NotEmpty implements ValidatorInterface
 {
     public function validate(mixed $data, NodeInterface $node): void
     {
-       if (empty($data)) {
+        if ($node->getFieldType() == NodeInterface::TYPE_NULL || $node->getFieldType() == NodeInterface::TYPE_BOOL) {
+            return;
+        }
+
+        if (empty($data)) {
            throw new \Exception('Field: ' . $node->getFullName() . ' cannot be empty');
-       }
+        }
     }
 }

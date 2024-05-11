@@ -42,5 +42,7 @@ interface NodeInterface
 
     public function isAdded(?bool $isAdded = null): ?bool;
 
+    public function isNotSet(?bool $isNotSet = null): bool;
+
     public function getNotSetValue(): mixed;
 }

@@ -12,7 +12,7 @@ class Required implements ValidatorInterface
 
     public function validate(mixed $data, NodeInterface $node): void
     {
-        if (!$data) {
+        if ($node->isNotSet()) {
             throw new \Exception('Field: ' . $node->getFullName() . ' is required');
         }
 

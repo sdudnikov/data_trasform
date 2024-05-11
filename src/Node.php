@@ -13,6 +13,7 @@ class Node implements NodeInterface
     protected array $additionalData = [];
     protected array $children = [];
     private ?RootNode $rootNode = null;
+    private bool $isNotSet = true;
 
     public function __construct(
         protected string $fieldName,
@@ -156,5 +157,14 @@ class Node implements NodeInterface
         $this->rootNode = $root;
 
         return $this->rootNode;
+    }
+
+    public function isNotSet(?bool $isNotSet = null): bool
+    {
+        if (!is_null($isNotSet)) {
+            $this->isNotSet = $isNotSet;
+        }
+
+        return $this->isNotSet;
     }
 }

@@ -194,4 +194,9 @@ final class RootNode implements NodeInterface
     {
         throw new \Exception('Not allowed getNotSetValue for root node');
     }
+
+    public function isNotSet(?bool $isNotSet = null): bool
+    {
+        throw new \Exception('Not allowed get or set isNotSet for root node');
+    }
 }
