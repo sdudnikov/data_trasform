@@ -1,5 +1,5 @@
 {
-    "name": "datalib/transfrom",
+    "name": "arraylib/transfrom",
     "description": "Transformation array by schema to another format",
     "keywords": ["transformation","array", "schema"],
     "type": "library",
