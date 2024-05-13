@@ -1,5 +1,5 @@
 {
-    "name": "arraylib/transform",
+    "name": "arraylib/schema",
     "description": "Transformation and validation array by schema to another format",
     "license": "MIT",
     "keywords": ["transformation","array", "schema"],
