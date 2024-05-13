@@ -1,6 +1,6 @@
 {
     "name": "arraylib/transfrom",
-    "description": "Transformation array by schema to another format",
+    "description": "Transformation and validation array by schema to another format",
     "license": "MIT",
     "keywords": ["transformation","array", "schema"],
     "type": "library",
